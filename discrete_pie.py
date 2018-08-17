@@ -27,7 +27,6 @@ class pie:
     Which is essentially the labels repeated weight times inside of a tuple
     Having data in this format, hopefully, allows you to experiment when picking a slice of the pie.
     Think of this as the partitioning rule in the flesh!
-    testing git
     """
     def __init__(self, slices):
 
