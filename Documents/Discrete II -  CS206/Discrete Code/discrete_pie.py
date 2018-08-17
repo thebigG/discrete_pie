@@ -13,7 +13,7 @@ Because they are! Hope you like it!
 rand_machine  = random.Random()
 
 class subject:
-     pass
+     pass 
 
 
 
