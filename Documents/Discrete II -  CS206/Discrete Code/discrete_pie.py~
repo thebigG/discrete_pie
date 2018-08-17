@@ -1,0 +1,132 @@
+import math
+import itertools
+import random
+from fractions import Fraction
+
+
+class subject:
+     pass
+
+
+
+
+class dice:
+    def __init__(self ,sides = 6):
+        self.sides = sides
+        self.dice_machine  = random.Random()
+    def roll(self):
+        self.state =  self.dice_machine.randint(1, self.sides)
+        return self.state
+    def roll_n_times(self, n):
+        self.state  = tuple([self.dice_machine.randint(1, self.sides)  for i in range(1,n+1, 1)])
+        return self.state
+
+    def get_state():
+        return self.state
+
+
+
+
+
+
+
+
+def product(iter):
+    product = 1
+    for num in iter:
+        product *= num
+    return product
+
+
+def get_factorials(n):
+    return[math.factorial(i) for i in range(1, n+1, 1)]
+
+
+def permute_n(n):
+    """
+    returns a list with all permutations from 1 through n
+    for instance permute_n(4) would return the following list:
+        [(1, 2, 3), (1, 3, 2), (2, 1, 3), (2, 3, 1), (3, 1, 2), (3, 2, 1)]
+    """
+    return [i for i in itertools.permutations(range(1,n+1,1))]
+
+def n_choose_k_slices(n, k = None, result = False):
+    """
+    This function returns a list of all of the parts(partition rule) that make up n_choose_k from 0 to k
+    in the format of a tuple: (n, i, result )
+    for instance:
+        n_choose_k_slices(3, 2)
+        will return the list [(3, 0, 1), (3, 1, 3), (3, 2, 3)]
+        if k is not given(k == None):
+            it is assumed that k ==  n
+            whichi will return ALL of the partitions which would be [(3, 0, 1), (3, 1, 3), (3, 2, 3), (3, 3, 1)]
+    """
+    slices = []
+    if k == None:
+        for i in range(n+1):
+            if result == False:
+                slices.append((n,i,n_choose_k(n, i)))
+            else:
+                slices.append(n_choose_k(n, i))
+    else:
+        print("k equals something")
+        for i in range(k+1):
+            if result == False:
+                slices.append((n,i,n_choose_k(n, i)))
+            else:
+                slices.append(n_choose_k(n, i))
+    return slices
+
+
+
+def n_choose_k(n, k):
+    return int((math.factorial(n)/(( math.factorial(k)) * (math.factorial(n-k) ))))
+
+
+def find_factor(n):
+     """
+     this function gives you all of the factors of n in a list
+     """
+     factor_values = []
+     for i in range(1, n +1):
+         if n % i == 0:
+             factor_values.append(i)
+     return factor_values
+
+def get_fraction(decimal):
+    return str(Fraction(decimal).limit_denominator())
+
+
+
+def generate_path(point):
+    index = point[0]
+    # print("index:", index)
+    p = point[1][index[0]]
+    q = point[1][index[1]]
+    r = point[1][index[2]]
+    path  =[]
+    while p > 0 or q> 0 or r > 0:
+        # print("current step:", (p,q,r))
+        path.append((p,q,r))
+        if p>0:
+            p -= 1
+            continue
+        elif q>0:
+            q -= 1
+            continue
+        elif r>0:
+            r -= 1
+            continue
+    # paths.append((0,0,0))
+
+    return (path, len(path))
+
+
+def go_back_to_origin(p, q, r):
+    paths = []
+    path_count  =  0
+    choice_combinations  = itertools.permutations((0,1,2), 3)
+    for set in choice_combinations:
+        # print("current set:", set)
+        paths.append(generate_path([set, [p,q,r]])[0])
+    return (paths, path_count)
