@@ -2,6 +2,7 @@ import math
 import itertools
 import random
 import fractions
+from abc import *
 """
 This module is a collection of a few functions, data structres and classes that were inspired by concepts I learned
 in Discrete Mathematics II(CS-206). The goal with this little module is to make some of these concepts practical and fun!
@@ -12,12 +13,41 @@ Because they are! Hope you like it!
 
 rand_machine  = random.Random()
 
-class subject:
-     pass
+class experiment:
+    def __init__(self,subjects):
+        self.subjects = []
+        state = []
+        for subject in subjects:
+            self.subjects.append(subject)
+            print("{} added".format(subject))
+            state.append(subject.state)
+        self.state = tuple(state)
+        return
+
+    def experiement(self):
+        state  = []
+        for subject in self.subjects:
+            subject.test()
+            state.append((str(subject),subject.results()))
+        self.state = tuple(state)
+        return self.state
+    def get_state():
+        return self.state
 
 
 
-class pie:
+
+class subject(ABC):
+    @abstractmethod
+    def test(self):
+        pass
+    @abstractmethod
+    def results(self):
+        pass
+
+
+
+class pie(subject):
     """
     pie is a data structure that represents a pie. This pie is slices size big.
     Input slices in the following form: [(label_1, weight), (label_2, weight), (label_n, weight)]
@@ -27,16 +57,21 @@ class pie:
     Which is essentially the labels repeated weight times inside of a tuple
     Having data in this format, hopefully, allows you to experiment when picking a slice of the pie.
     Think of this as the partitioning rule in the flesh!
+    NOTE: Unlike coin and dice, whose state is initially "Idle", pie's initial state is "Unpicked"
+    This is because a pie, unlike a dice/coin, is an object that does NOT have one fixed "face". It is always showing all of its faces.
+    When state is fetched from a pie object, it will either be "Unpicked", or the last piece that was picked by the user.
     """
     def __init__(self, slices):
 
         pie = []
+        self.state = "Unpicked"
         self.meta_pie = {}
         for (label,weight) in slices:
             self.meta_pie.update({label: weight})
             for i in [label] * weight:
                 pie.append(i)
         self.pie = tuple(pie)
+
     def get_weight(self,label):
         """
         Get the weight of the piece with name label
@@ -48,13 +83,23 @@ class pie:
         """
         Pick a slice of the pie at random
         """
-        return self.pie[rand_machine.randint(0, len(self.pie) - 1)]
+        self.state = self.pie[rand_machine.randint(0, len(self.pie) - 1)]
+        return self.state
+    def __repr__():
+        return "pie"
+    def __str__():
+        return "pie"
+    def test(self):
+        self.pick_slice()
+    def results(self):
+        return self.state
 
 
 
 
 
-class dice:
+
+class dice(subject):
     """
     This class represents a dice. By default, this dice has 6 sides.
     However, this can be set to however many number of sides you'd like.
@@ -76,16 +121,24 @@ class dice:
     def roll(self):
         self.state =  self.dice[rand_machine.randint(0, self.sides-1)]
         return self.state
+    def test(self):
+        self.roll()
     def roll_n_times(self, n):
         self.state  = tuple(self.dice[rand_machine.randint(0, self.sides-1)]  for i in range(1,n+1, 1))
         return self.state
 
-    def get_state():
+    def get_state(self):
         return self.state
+    def results(self):
+        return self.get_state()
+    def __str__(self):
+        return "dice"
+    def __repr__(self):
+        return "dice"
 
 
 
-class coin:
+class coin(subject):
     """
     Very similar to dice--a coin with state.
     However, unlike dice, coin ALWAYS has two sides.
@@ -104,6 +157,18 @@ class coin:
     def toss_n_times(self, n):
         self.state = tuple([self.__coin[rand_machine.randint(0,1)] for i in range(1, n+1, 1)])
         return self.state
+    def get_state(self):
+        return self.state
+    def test(self):
+        self.toss()
+    def results(self):
+        return self.state
+    def __str__(self):
+        return "coin"
+    def __repr__(self):
+        return "coin"
+
+
 
 
 
